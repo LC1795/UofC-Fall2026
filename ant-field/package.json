@@ -1,0 +1,8 @@
+{
+  "name": "lc-ant-field",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive ant colony, pheromone trails, food, and drawn obstacles.",
+  "scripts": { "start": "node server.cjs" },
+  "engines": { "node": ">=18" }
+}

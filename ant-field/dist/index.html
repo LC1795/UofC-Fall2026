@@ -1,18 +1,51 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LC — Ant Field</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Ctext y='16'%3E●%3C/text%3E%3C/svg%3E"><style>*{box-sizing:border-box}body{margin:0;background:#000;color:white;font-family:Arial,sans-serif;overflow:hidden}canvas{display:block;width:100vw;height:100svh;touch-action:none;cursor:crosshair}header,footer{position:absolute;left:0;right:0;padding:28px 32px;pointer-events:none;display:flex;justify-content:space-between;gap:20px}header{top:0;background:linear-gradient(#000c,transparent)}footer{bottom:0;background:linear-gradient(transparent,#000d);font-size:13px;color:#aaa}.brand{font-size:24px;font-weight:bold}.brand b{color:#caff70}h1{font-size:18px;font-weight:400;margin:14px 0 8px}p{font-size:14px;color:#999;line-height:1.6;margin:0}.stats{display:flex;gap:28px;text-align:right}.stats strong{display:block;font-weight:400;font-size:24px;font-variant-numeric:tabular-nums}.stats span{display:block;font-size:11px;color:#999;margin-top:8px}.legend{display:flex;gap:24px}.legend i{display:inline-block;border-radius:50%;margin-right:7px}.hint{text-align:right;line-height:1.6}@media(max-width:600px){header,footer{padding:20px}.stats{gap:12px}.stats strong{font-size:19px}.stats span{font-size:10px}p{max-width:150px;font-size:12px}footer{display:block}.legend{gap:14px;font-size:12px}.hint{text-align:left;margin-top:12px;font-size:11px}}.controls{position:absolute;left:32px;top:170px;width:240px;padding:18px;background:#111e;border:1px solid #ffffff25;border-radius:8px}.control+ .control{margin-top:22px}.control label{display:flex;justify-content:space-between;gap:12px;font-size:14px}.control output{color:#caff70;font-variant-numeric:tabular-nums}.control input{width:100%;margin:14px 0 4px;accent-color:#caff70;cursor:pointer}.control small{display:block;color:#999;font-size:12px;line-height:1.5}@media(max-width:600px){.controls{left:20px;right:20px;top:145px;width:auto;display:flex;gap:20px;padding:12px}.control{flex:1;min-width:0}.control+ .control{margin-top:0}.control label{font-size:12px;flex-wrap:wrap}.control small{font-size:11px}}.tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.tools button{background:#222;color:#ddd;border:1px solid #555;border-radius:5px;padding:9px 10px;font:13px Arial;cursor:pointer}.tools button[aria-pressed="true"]{background:#caff70;color:#111;border-color:#caff70}.tools button:focus-visible{outline:2px solid white;outline-offset:3px}.tool-hint{font-size:12px;color:#aaa;line-height:1.5;margin-bottom:16px}@media(max-width:600px){.controls{flex-wrap:wrap;gap:12px}.tools{width:100%;margin:0}.tool-hint{width:100%;margin:0}}</style>
-<canvas tabindex="0" aria-label="1,000 ants. Click or tap to place food; Enter places food randomly. Ants carry one unit at a time to the central nest."></canvas><header><div><div class="brand">LC<b>.</b></div><h1>Ant field</h1><p>Place food or draw a barrier.<br>Watch scent trails guide the colony.</p></div><div class="stats"><div><strong id="ant-total">1,000</strong><span>ANTS</span></div><div><strong id="food">0</strong><span>FOOD LEFT</span></div><div><strong id="stored">0</strong><span>DELIVERED</span></div></div></header><footer><div class="legend"><span><i style="width:4px;height:4px;background:#6cafff"></i>Scouts · <span id="scouts">334</span></span><span><i style="width:6px;height:6px;background:#ff7297"></i>Workers · <span id="workers">333</span></span><span><i style="width:8px;height:8px;background:#caff70"></i>Soldiers · <span id="soldiers">333</span></span></div><div class="hint">Follow the scent · Trails fade over 10 seconds<br>Food weight applies to new food · Enter also adds food</div></footer>
-<section class="controls" aria-label="Simulation controls"><div class="tools" role="group" aria-label="Canvas tool"><button id="food-tool" aria-pressed="true">Place food</button><button id="wall-tool" aria-pressed="false">Draw obstacles</button><button id="clear-walls">Clear obstacles</button></div><div class="tool-hint" id="tool-hint">Click or tap to place food.</div><div class="control"><label for="food-weight">Food weight <output id="food-weight-value">250</output></label><input id="food-weight" type="range" min="10" max="1000" step="10" value="250"><small id="food-range">50–250 units per new food</small></div><div class="control"><label for="ant-amount">Amount of ants <output id="ant-amount-value">1,000</output></label><input id="ant-amount" type="range" min="10" max="3000" step="10" value="1000"><small>10–3,000 ants · updates live</small></div></section><script>
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LC — Ant Field</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Ctext y='16'%3E●%3C/text%3E%3C/svg%3E"><style>*{box-sizing:border-box}body{margin:0;background:#000;color:white;font-family:Arial,sans-serif;overflow:hidden}canvas{display:block;width:100vw;height:100svh;touch-action:none;cursor:crosshair}header,footer{position:absolute;left:0;right:0;padding:28px 32px;pointer-events:none;display:flex;justify-content:space-between;gap:20px}header{top:0;background:linear-gradient(#000c,transparent)}footer{bottom:0;background:linear-gradient(transparent,#000d);font-size:13px;color:#aaa}.brand{font-size:24px;font-weight:bold}.brand b{color:#caff70}h1{font-size:18px;font-weight:400;margin:14px 0 8px}p{font-size:14px;color:#999;line-height:1.6;margin:0}.stats{display:flex;gap:28px;text-align:right}.stats strong{display:block;font-weight:400;font-size:24px;font-variant-numeric:tabular-nums}.stats span{display:block;font-size:11px;color:#999;margin-top:8px}.legend{display:flex;gap:24px}.legend i{display:inline-block;border-radius:50%;margin-right:7px}.hint{text-align:right;line-height:1.6}@media(max-width:600px){header,footer{padding:20px}.stats{gap:12px}.stats strong{font-size:19px}.stats span{font-size:10px}p{max-width:150px;font-size:12px}footer{display:block}.legend{gap:14px;font-size:12px}.hint{text-align:left;margin-top:12px;font-size:11px}}.controls{position:absolute;left:32px;top:170px;width:240px;padding:18px;background:#111e;border:1px solid #ffffff25;border-radius:8px}.control+ .control{margin-top:22px}.control label{display:flex;justify-content:space-between;gap:12px;font-size:14px}.control output{color:#caff70;font-variant-numeric:tabular-nums}.control input{width:100%;margin:14px 0 4px;accent-color:#caff70;cursor:pointer}.control small{display:block;color:#999;font-size:12px;line-height:1.5}@media(max-width:600px){.controls{left:20px;right:20px;top:145px;width:auto;display:flex;gap:20px;padding:12px}.control{flex:1;min-width:0}.control+ .control{margin-top:0}.control label{font-size:12px;flex-wrap:wrap}.control small{font-size:11px}}.tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.tools button{background:#222;color:#ddd;border:1px solid #555;border-radius:5px;padding:9px 10px;font:13px Arial;cursor:pointer}.tools button[aria-pressed="true"]{background:#caff70;color:#111;border-color:#caff70}.tools button:focus-visible{outline:2px solid white;outline-offset:3px}.tool-hint{font-size:12px;color:#aaa;line-height:1.5;margin-bottom:16px}@media(max-width:600px){.controls{flex-wrap:wrap;gap:12px}.tools{width:100%;margin:0}.tool-hint{width:100%;margin:0}}.controls{max-height:calc(100svh - 190px);overflow-y:auto;scrollbar-width:thin}@media(max-width:600px){.controls{max-height:42svh}.control{flex:1 1 42%}}header{padding:20px 24px}header>div:first-child{display:flex;align-items:center;gap:12px}h1{margin:0;font-size:16px}.brand{font-size:21px}.stats strong{font-size:20px}.controls{top:88px;left:24px;width:232px;padding:12px;max-height:calc(100svh - 160px)}.tools{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}.tools button{padding:8px 5px;font-size:14px;white-space:normal}.tool-hint{margin-bottom:12px}.control+ .control{margin-top:12px}.control input{margin:6px 0 0;height:22px}.control small[hidden]{display:none}footer{padding:16px 24px}.stats span{margin-top:4px}@media(max-width:600px){header{padding:16px}.controls{top:76px;left:16px;right:16px;width:auto;max-height:40svh;gap:8px 16px}.tools{display:flex;flex-wrap:wrap}.tools button{flex:1 1 40%;white-space:normal}.tool-hint{margin:0}.control+ .control{margin-top:0}.control label{font-size:14px}.stats{gap:10px}.stats strong{font-size:17px}header>div:first-child{gap:8px}h1{font-size:14px}footer{padding:14px 16px}}.controls{transition:transform .24s ease,opacity .24s ease}.controls.is-hidden{transform:translateX(calc(-100% - 32px));opacity:0;pointer-events:none}#dashboard-toggle{position:absolute;z-index:3;left:264px;top:88px;width:30px;height:42px;border:1px solid #555;border-radius:0 7px 7px 0;background:#171717;color:#caff70;font-size:26px;cursor:pointer;transition:left .24s ease}#dashboard-toggle.is-hidden{left:0}#dashboard-toggle:focus-visible{outline:2px solid #caff70;outline-offset:3px}@media(max-width:600px){#dashboard-toggle{top:76px;left:auto;right:0;width:26px}#dashboard-toggle.is-hidden{left:0;right:auto}.controls{right:32px}}@media(prefers-reduced-motion:reduce){.controls,#dashboard-toggle{transition:none}}</style>
+<canvas tabindex="0" aria-label="400 ants. Click or tap to place food; Enter places food randomly. Ants carry one unit at a time to the central nest."></canvas><header><div><div class="brand">LC<b>.</b></div><h1>Ant field</h1></div><div class="stats"><div><strong id="ant-total">400</strong><span>ANTS</span></div><div><strong id="food">0</strong><span>FOOD LEFT</span></div><div><strong id="stored">0</strong><span>DELIVERED</span></div></div></header><footer><div class="legend"><span><i style="width:4px;height:4px;background:#6cafff"></i>Scouts · <span id="scouts">134</span></span><span><i style="width:6px;height:6px;background:#ff7297"></i>Workers · <span id="workers">133</span></span><span><i style="width:8px;height:8px;background:#caff70"></i>Soldiers · <span id="soldiers">133</span></span></div><div class="hint"><span style="color:#ffb85c">Loaded</span> · <span style="color:#70d8ff">Unloaded</span></div></footer>
+<button id="dashboard-toggle" aria-controls="dashboard" aria-expanded="true" aria-label="Hide dashboard" title="Hide dashboard">‹</button><section id="dashboard" class="controls" aria-label="Simulation controls"><div class="tools" role="group" aria-label="Canvas tool"><button id="food-tool" aria-pressed="true" title="Click to place food">Food</button><button id="wall-tool" aria-pressed="false" title="Drag to draw obstacles">Walls</button><button id="generate-walls" title="Replace walls with a fresh noise pattern; preserve food and ants">Generate walls</button><button id="generate-food" title="Add up to 8 random food sources using the current food weight">Generate food</button><button id="restart" title="Respawn ants at the nest; preserve remaining food, walls and settings">Restart ants</button><button id="reset-environment" title="Clear food, walls, trails and food counters; keep ants and settings">Reset environment</button></div><div class="tool-hint" id="tool-hint">Click to add food.</div><div class="control"><label for="food-weight">Food weight <output id="food-weight-value">250</output></label><input id="food-weight" type="range" min="10" max="1000" step="10" value="250"><small hidden id="food-range">50–250 units per new food</small></div><div class="control"><label for="ant-amount">Ants <output id="ant-amount-value">400</output></label><input id="ant-amount" type="range" min="10" max="3000" step="10" value="400"></div><div class="control"><label for="scent-decay">Scent decay <output id="scent-decay-value">10 s</output></label><input id="scent-decay" type="range" min="1" max="30" step="1" value="10"></div><div class="control"><label for="path-randomness">Randomness <output id="path-randomness-value">30%</output></label><input id="path-randomness" type="range" min="0" max="100" step="1" value="30"></div></section><script>
 'use strict';
+const dashboard=document.querySelector('#dashboard'),dashboardToggle=document.querySelector('#dashboard-toggle');
+dashboardToggle.addEventListener('click',()=>{
+ const hidden=dashboardToggle.getAttribute('aria-expanded')==='true';
+ dashboard.classList.toggle('is-hidden',hidden);dashboardToggle.classList.toggle('is-hidden',hidden);
+ dashboard.inert=hidden;dashboard.setAttribute('aria-hidden',String(hidden));
+ dashboardToggle.setAttribute('aria-expanded',String(!hidden));
+ const label=hidden?'Show dashboard':'Hide dashboard';
+ dashboardToggle.setAttribute('aria-label',label);dashboardToggle.title=label;dashboardToggle.textContent=hidden?'›':'‹';
+});
 const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),trails=document.createElement('canvas'),ink=trails.getContext('2d');
 const kinds=[{color:'#6cafff',r:1.25,speed:76},{color:'#ff7297',r:1.9,speed:58},{color:'#caff70',r:2.6,speed:43}];
-const TRAIL_SECONDS=10,BUCKET_SECONDS=.25;
-let trailLayers=[],scentCols=0,scentRows=0,scent=new Float32Array(0),trailClock=0,currentBucket=-1;
-function fade(age){return Math.max(0,1-age/TRAIL_SECONDS);}
-function resetTrails(){scentCols=Math.ceil(w/12);scentRows=Math.ceil(h/12);scent=new Float32Array(scentCols*scentRows);trailLayers=[];currentBucket=-1;}
-function advanceTrails(time){trailClock=time;const bucket=Math.floor(time/BUCKET_SECONDS);if(bucket!==currentBucket){currentBucket=bucket;trailLayers=trailLayers.filter(b=>time-b.time<TRAIL_SECONDS);const c=document.createElement('canvas');c.width=Math.ceil(w*.5);c.height=Math.ceil(h*.5);const context=c.getContext('2d');context.setTransform(.5,0,0,.5,0,0);trailLayers.push({time,canvas:c,ctx:context,scent:new Map()});}
- scent.fill(0);for(const layer of trailLayers){const weight=fade(time-layer.time);for(const [i,value] of layer.scent)scent[i]+=value*weight;}}
-function deposit(x,y,amount){const col=Math.floor(x/12),row=Math.floor(y/12),layer=trailLayers.at(-1);if(!layer)return;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const cx=col+dx,cy=row+dy;if(cx<0||cx>=scentCols||cy<0||cy>=scentRows)continue;const i=cy*scentCols+cx;layer.scent.set(i,(layer.scent.get(i)||0)+amount/(1+dx*dx+dy*dy));}}
-function smell(x,y){const col=Math.floor(x/12),row=Math.floor(y/12);return col<0||row<0||col>=scentCols||row>=scentRows?0:scent[row*scentCols+col];}
-function followScent(a,dt){const offsets=[-.65,0,.65],scores=offsets.map(offset=>smell(a.x+Math.cos(a.a+offset)*22,a.y+Math.sin(a.a+offset)*22));const best=Math.max(...scores);if(best>.015){const i=scores.indexOf(best);a.a+=offsets[i]*Math.min(1,dt*7);a.a+=(Math.random()-.5)*.6*Math.sqrt(dt);}else a.a+=(Math.random()-.5)*3*Math.sqrt(dt);}
+let pathRandomness=.3;const SOURCE_LIFETIME=30;let trailSeconds=10;const BUCKET_SECONDS=.25;
+let trailLayers=[],scentCols=0,scentRows=0,scent=[new Float32Array(0),new Float32Array(0)],trailClock=0,currentBucket=-1;
+function fade(age){return Math.max(0,1-age/trailSeconds);}
+function resetTrails(){scentCols=Math.ceil(w/12);scentRows=Math.ceil(h/12);scent=[new Float32Array(scentCols*scentRows),new Float32Array(scentCols*scentRows)];trailLayers=[];currentBucket=-1;}
+function advanceTrails(time){trailClock=time;const bucket=Math.floor(time/BUCKET_SECONDS);if(bucket!==currentBucket){currentBucket=bucket;trailLayers=trailLayers.filter(b=>time-b.time<trailSeconds);const c=document.createElement('canvas');const scale=Math.min(.5,600/w,450/h);c.width=Math.ceil(w*scale);c.height=Math.ceil(h*scale);const context=c.getContext('2d');context.setTransform(scale,0,0,scale,0,0);trailLayers.push({time,canvas:c,ctx:context,scent:[new Map(),new Map()]});}
+ for(const field of scent)field.fill(0);for(const layer of trailLayers){const weight=fade(time-layer.time);for(let channel=0;channel<2;channel++)for(const [i,value] of layer.scent[channel])scent[channel][i]=Math.max(scent[channel][i],value*weight);}}
+function deposit(x,y,amount,channel){const col=Math.floor(x/12),row=Math.floor(y/12),layer=trailLayers.at(-1);if(!layer)return;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const cx=col+dx,cy=row+dy;if(cx<0||cx>=scentCols||cy<0||cy>=scentRows)continue;if(!clearPath(x,y,cx*12+6,cy*12+6,0))continue;const i=cy*scentCols+cx;layer.scent[channel].set(i,Math.max(layer.scent[channel].get(i)||0,amount/(1+dx*dx+dy*dy)));}}
+function smell(x,y,channel){const col=Math.floor(x/12),row=Math.floor(y/12);return col<0||row<0||col>=scentCols||row>=scentRows?0:scent[channel][row*scentCols+col];}
+// Loaded ants follow unloaded scent (0); unloaded ants follow loaded scent (1).
+function turnToward(a,angle,dt,rate=10){const delta=Math.atan2(Math.sin(angle-a.a),Math.cos(angle-a.a));a.a+=delta*Math.min(1,dt*rate);}
+function followScent(a,dt){
+ // Only the opposite load-state channel is attractive. Scan both sides and behind.
+ const channel=a.load?0:1,offsets=[0,-.4,.4,-.8,.8,-1.3,1.3,-2,2,Math.PI];
+ a.senseWait=(a.senseWait||0)-dt;
+ if(a.senseWait<=0){a.senseWait=.12;const here=smell(a.x,a.y,channel);let best=.001,bestAngle=null;
+  for(const offset of offsets){const angle=a.a+offset;let strength=0;
+   for(const distance of [8,16,24]){const x=a.x+Math.cos(angle)*distance,y=a.y+Math.sin(angle)*distance;if(clearPath(a.x,a.y,x,y,kinds[a.k].r))strength=Math.max(strength,smell(x,y,channel));}
+   // Prefer continuing on a comparable trail instead of alternating left/right.
+   const score=strength>here*1.01?strength*(.9+.1*Math.cos(offset)):0;if(score>best){best=score;bestAngle=angle;}}
+  a.scentHeading=bestAngle;
+ }
+ if(a.scentHeading!==null&&a.scentHeading!==undefined)turnToward(a,a.scentHeading,dt);
+ else a.a+=(Math.random()-.5)*3*Math.sqrt(dt);
+}
+function nearbyDestination(a){
+ const awareness=kinds[a.k].r*4; // Twice the ant's diameter, measured to a target's edge.
+ if(a.load){const d=Math.hypot(a.x-nest.x,a.y-nest.y);return d<=nest.r+awareness&&clearPath(a.x,a.y,nest.x,nest.y,kinds[a.k].r)?nest:null;}
+ let nearest=null,best=Infinity;
+ for(const food of foods){if(food.value<=0)continue;const d=Math.hypot(a.x-food.x,a.y-food.y);if(d<=5+awareness&&d<best&&clearPath(a.x,a.y,food.x,food.y,kinds[a.k].r)){best=d;nearest=food;}}
+ return nearest;
+}
+function resetScentChoice(a){a.senseWait=0;a.scentHeading=null;}
+
 const WALL_CELL=6;let walls=new Uint8Array(0),wallCols=0,wallRows=0,mode='food',drawing=null;
 const wallCanvas=document.createElement('canvas'),wallInk=wallCanvas.getContext('2d');
 function rebuildWalls(ow,oh){const old=walls,cols=wallCols,rows=wallRows;wallCols=Math.ceil(w/WALL_CELL);wallRows=Math.ceil(h/WALL_CELL);walls=new Uint8Array(wallCols*wallRows);wallCanvas.width=w;wallCanvas.height=h;wallInk.fillStyle='#68717f';for(let y=0;y<wallRows;y++)for(let x=0;x<wallCols;x++){if(ow&&old[Math.min(rows-1,Math.floor(y*oh/h))*cols+Math.min(cols-1,Math.floor(x*ow/w))]&&Math.hypot(x*6+3-nest.x,y*6+3-nest.y)>nest.r+20){walls[y*wallCols+x]=1;wallInk.fillRect(x*6,y*6,6,6);}}}
@@ -24,7 +57,7 @@ function moveAnt(a,distance){const radius=kinds[a.k].r;const steps=Math.max(1,Ma
 const ants=[],foods=[],nest={x:0,y:0,r:22};let w=0,h=0,delivered=0,created=0,last=0,ui=0;
 function resize(){const ow=w,oh=h;w=innerWidth;h=innerHeight;const dpr=Math.min(devicePixelRatio||1,2);for(const c of [canvas,trails]){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);ink.setTransform(dpr,0,0,dpr,0,0);nest.x=w/2;nest.y=h/2;resetTrails();rebuildWalls(ow,oh);if(ow)for(const p of [...ants,...foods]){p.x=p.x/ow*w;p.y=p.y/oh*h;}for(const a of ants)ejectAnt(a);}
 resetTrails();resize();addEventListener('resize',resize);
-for(let i=0;i<1000;i++)ants.push({x:Math.random()*w,y:Math.random()*h,a:Math.random()*Math.PI*2,k:i%3,load:0,target:null,search:Math.random()*.3,phase:Math.random()*6.28});
+for(let i=0;i<400;i++)ants.push({x:nest.x,y:nest.y,a:Math.random()*Math.PI*2,k:i%3,load:0,scentAge:0,depart:1.2});
 function stats(){document.querySelector('#food').textContent=foods.reduce((s,f)=>s+f.value,0).toLocaleString();document.querySelector('#stored').textContent=delivered.toLocaleString();}
 function addFood(x,y){if(blocked(x,y,8))return;const max=Number(document.querySelector('#food-weight').value),min=Math.ceil(max*.2);const value=min+Math.floor(Math.random()*(max-min+1));foods.push({x,y,value});created+=value;stats();}
 
@@ -33,29 +66,126 @@ foodWeight.addEventListener('input',()=>{const max=Number(foodWeight.value);docu
 function setAntAmount(count){
  // Retiring carriers drop their unit at their current position, preserving food.
  if(count<ants.length){for(const ant of ants.splice(count)){if(ant.load)foods.push({x:ant.x,y:ant.y,value:1});}}
- while(ants.length<count){const i=ants.length;ants.push({x:nest.x,y:nest.y,a:Math.random()*Math.PI*2,k:i%3,load:0,target:null,search:0,phase:Math.random()*6.28});}
+ while(ants.length<count){const i=ants.length;ants.push({x:nest.x,y:nest.y,a:Math.random()*Math.PI*2,k:i%3,load:0,scentAge:0,depart:1.2});}
  document.querySelector('#ant-total').textContent=count.toLocaleString();document.querySelector('#ant-amount-value').textContent=count.toLocaleString();
  ['#scouts','#workers','#soldiers'].forEach((id,k)=>document.querySelector(id).textContent=ants.filter(a=>a.k===k).length.toLocaleString());
  canvas.setAttribute('aria-label',count+' ants. Click or tap to place food; Enter places food randomly. Ants carry one unit at a time to the central nest.');stats();
 }
 antAmount.addEventListener('input',()=>setAntAmount(Number(antAmount.value)));
-function selectTool(value){mode=value;drawing=null;document.querySelector('#food-tool').setAttribute('aria-pressed',String(mode==='food'));document.querySelector('#wall-tool').setAttribute('aria-pressed',String(mode==='wall'));document.querySelector('#tool-hint').textContent=mode==='food'?'Click or tap to place food.':'Drag to draw. The nest and existing food stay clear.';}
+document.querySelector('#path-randomness').addEventListener('input',e=>{pathRandomness=Number(e.target.value)/100;document.querySelector('#path-randomness-value').textContent=e.target.value+'%';});
+document.querySelector('#scent-decay').addEventListener('input',event=>{trailSeconds=Number(event.target.value);document.querySelector('#scent-decay-value').textContent=trailSeconds+' s';trailLayers=trailLayers.filter(layer=>trailClock-layer.time<trailSeconds);});
+function selectTool(value){mode=value;drawing=null;document.querySelector('#food-tool').setAttribute('aria-pressed',String(mode==='food'));document.querySelector('#wall-tool').setAttribute('aria-pressed',String(mode==='wall'));document.querySelector('#tool-hint').textContent=mode==='food'?'Click or tap to place food.':'Drag to draw walls.';}
 document.querySelector('#food-tool').addEventListener('click',()=>selectTool('food'));
 document.querySelector('#wall-tool').addEventListener('click',()=>selectTool('wall'));
-document.querySelector('#clear-walls').addEventListener('click',()=>{walls.fill(0);wallInk.clearRect(0,0,w,h);});
+function restartSimulation(){
+ drawing=null;ants.length=0;delivered=0;created=foods.reduce((sum,food)=>sum+food.value,0);ui=0;last=0;
+ resetTrails();trailClock=0;
+ setAntAmount(Number(antAmount.value));
+ stats();render();
+}
+function generateFood(){
+ // Add sources without replacing existing food or changing the colony or walls.
+ let added=0;
+ for(let attempt=0;attempt<800&&added<8;attempt++){
+  const x=24+Math.random()*Math.max(0,w-48),y=24+Math.random()*Math.max(0,h-48);
+  if(blocked(x,y,16)||Math.hypot(x-nest.x,y-nest.y)<nest.r+40||foods.some(f=>Math.hypot(x-f.x,y-f.y)<40))continue;
+  addFood(x,y);added++;
+ }
+ document.querySelector('#tool-hint').textContent=added?added+' food sources added.':'No open space for food.';
+ render();return added;
+}
+document.querySelector('#generate-food').addEventListener('click',generateFood);
+function generateWalls(){
+ drawing=null;
+ // Layered smooth value noise produces organic islands instead of pixel static.
+ const seed=Math.floor(Math.random()*4294967296);
+ function hash(x,y){let n=Math.imul(x,374761393)^Math.imul(y,668265263)^seed;n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;}
+ function noise(x,y){const ix=Math.floor(x),iy=Math.floor(y);let fx=x-ix,fy=y-iy;fx=fx*fx*(3-2*fx);fy=fy*fy*(3-2*fy);const a=hash(ix,iy),b=hash(ix+1,iy),c=hash(ix,iy+1),d=hash(ix+1,iy+1);return (a+(b-a)*fx)*(1-fy)+(c+(d-c)*fx)*fy;}
+ const scale=Math.max(48,Math.min(110,Math.min(w,h)/6));
+ const samples=new Float32Array(walls.length);
+ for(let y=0;y<wallRows;y++)for(let x=0;x<wallCols;x++){const nx=(x*6+3)/scale,ny=(y*6+3)/scale;samples[y*wallCols+x]=.75*noise(nx,ny)+.25*noise(nx*2.1+47,ny*2.1+91);}
+ // Keep roughly a quarter of the field solid across different random seeds.
+ const sorted=Float32Array.from(samples).sort(),threshold=sorted[Math.floor(sorted.length*.74)];
+ walls.fill(0);wallInk.clearRect(0,0,w,h);wallInk.fillStyle='#68717f';
+ for(let y=0;y<wallRows;y++)for(let x=0;x<wallCols;x++){const px=x*6+3,py=y*6+3;
+  if(samples[y*wallCols+x]<threshold||px<18||py<18||px>w-18||py>h-18||Math.hypot(px-nest.x,py-nest.y)<nest.r+36||foods.some(f=>Math.hypot(px-f.x,py-f.y)<24))continue;
+  walls[y*wallCols+x]=1;wallInk.fillRect(x*6,y*6,6,6);
+ }
+ for(const ant of ants){ejectAnt(ant);resetScentChoice(ant);ant.avoid=0;}
+ resetTrails();trailClock=0;render();
+}
+document.querySelector('#generate-walls').addEventListener('click',generateWalls);
+function resetEnvironment(){
+ drawing=null;foods.length=0;walls.fill(0);wallInk.clearRect(0,0,w,h);
+ resetTrails();trailClock=0;created=0;delivered=0;
+ for(const ant of ants){ant.load=0;ant.scentAge=Infinity;ant.explore=0;ant.avoid=0;resetLoopMemory(ant);resetScentChoice(ant);}
+ stats();render();
+}
+document.querySelector('#restart').addEventListener('click',restartSimulation);
+document.querySelector('#reset-environment').addEventListener('click',resetEnvironment);
 function pointerPosition(e){const b=canvas.getBoundingClientRect();return {x:e.clientX-b.left,y:e.clientY-b.top,id:e.pointerId};}
 canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;const p=pointerPosition(e);if(mode==='food')addFood(p.x,p.y);else{drawing=p;canvas.setPointerCapture(e.pointerId);paintWall(p.x,p.y);}});
 canvas.addEventListener('pointermove',e=>{if(!drawing||drawing.id!==e.pointerId)return;const p=pointerPosition(e);paintWall(drawing.x,drawing.y,p.x,p.y);drawing=p;});
 for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,()=>{drawing=null;});
 canvas.addEventListener('keydown',e=>{if(e.key==='Escape')selectTool('food');if(mode==='food'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();addFood(20+Math.random()*(w-40),20+Math.random()*(h-40));}});
 
+// Source age resets only on nest contact or successful food pickup.
+// Max-strength blending prevents repeated circling from creating false sources.
+function sourceStrength(a){
+ if(!Number.isFinite(a.scentAge)||a.scentAge>=SOURCE_LIFETIME)return 0;
+ const remaining=1-Math.max(0,a.scentAge)/SOURCE_LIFETIME;
+ return remaining*remaining;
+}
+function resetLoopMemory(a){a.recentPositions=[];a.loopClock=0;a.loopSample=0;a.escape=0;}
+function updateLoopAvoidance(a,dt){
+ a.escape=Math.max(0,(a.escape||0)-dt);a.loopClock=(a.loopClock||0)+dt;
+ a.loopSample=(a.loopSample||0)+dt;
+ if(a.loopSample<.4)return;a.loopSample=0;
+ const now=a.loopClock;const history=a.recentPositions||(a.recentPositions=[]);
+ while(history.length&&now-history[0].t>12)history.shift();
+ if(a.escape>0||a.depart>0)return;
+ const old=history.filter(p=>now-p.t>=2);
+ const revisits=old.filter(p=>Math.hypot(a.x-p.x,a.y-p.y)<18);
+ const confined=history.length>=10&&history.slice(-10).every(p=>Math.hypot(a.x-p.x,a.y-p.y)<25);
+ if(confined||(revisits.length>=2&&revisits.at(-1).t-revisits[0].t>=1.2)){
+  let best=-Infinity,heading=a.a+Math.PI;
+  for(let i=0;i<16;i++){
+   const angle=a.a+i*Math.PI/8;let distance=0;
+   for(let step=6;step<=60;step+=6){if(!clearPath(a.x,a.y,a.x+Math.cos(angle)*step,a.y+Math.sin(angle)*step,kinds[a.k].r))break;distance=step;}
+   const x=a.x+Math.cos(angle)*distance,y=a.y+Math.sin(angle)*distance;
+   const novelty=history.length?Math.min(...history.map(p=>Math.hypot(x-p.x,y-p.y))):0;
+   const score=distance+novelty*1.5+Math.random()*4;
+   if(score>best){best=score;heading=angle;}
+  }
+  a.escape=3;a.escapeHeading=heading;a.explore=0;a.a=heading;resetScentChoice(a);history.length=0;
+ }else history.push({x:a.x,y:a.y,t:now});
+}
+function updateExploration(a,dt){
+ a.depart=Math.max(0,(a.depart||0)-dt);
+ // Short, occasional exploration bursts break scent loops, independent of frame rate.
+ a.explore=Math.max(0,(a.explore||0)-dt);
+ if(pathRandomness===0)a.explore=0;
+ if(!a.depart&&pathRandomness>0&&Math.random()<1-Math.exp(-pathRandomness*.65*dt)){
+  a.explore=.4+pathRandomness;a.exploreHeading=a.a+(Math.random()<.5?-1:1)*(.5+Math.random()*1.8);resetScentChoice(a);
+ }
+}
 function tick(dt,time){advanceTrails(time);const trailInk=trailLayers.at(-1).ctx;
-for(const a of ants){const kind=kinds[a.k],ox=a.x,oy=a.y;a.search-=dt;a.avoid=Math.max(0,(a.avoid||0)-dt);
-if(!a.load&&(a.search<=0||a.target?.value===0)){a.search=.3+Math.random()*.2;let best=80*80;a.target=null;for(const f of foods){if(!f.value)continue;const d=(f.x-a.x)**2+(f.y-a.y)**2;if(d<best&&clearPath(a.x,a.y,f.x,f.y,kind.r)){best=d;a.target=f;}}}
-const target=a.load?nest:a.target;
-if(a.avoid>0){}else if(target){const dx=target.x-a.x,dy=target.y-a.y,d=Math.hypot(dx,dy);if(d<=(a.load?nest.r:7)&&clearPath(a.x,a.y,target.x,target.y,kind.r)){if(a.load){delivered++;a.load=0;a.target=null;a.search=0;a.a+=Math.PI;}else if(target.value>0){target.value--;a.load=1;a.target=null;}}else{const desired=Math.atan2(dy,dx)+Math.sin(time*2+a.phase)*.13*Math.min(1,d/45),diff=Math.atan2(Math.sin(desired-a.a),Math.cos(desired-a.a));a.a+=diff*Math.min(1,dt*9);}}else followScent(a,dt);
+for(const a of ants){const kind=kinds[a.k],ox=a.x,oy=a.y;a.avoid=Math.max(0,(a.avoid||0)-dt);a.scentAge=(a.scentAge||0)+dt;updateExploration(a,dt);updateLoopAvoidance(a,dt);
+// Transfers require contact; direct steering only applies within local awareness.
+const atNest=Math.hypot(a.x-nest.x,a.y-nest.y)<=nest.r+kind.r;
+if(atNest){a.scentAge=0;if(a.load){if(a.load)delivered++;a.load=0;resetLoopMemory(a);a.depart=1.2;a.explore=0;a.a=Math.atan2(a.y-nest.y,a.x-nest.x)+(Math.random()-.5)*.8;resetScentChoice(a);}}
+if(!a.load){for(const food of foods){if(food.value>0&&Math.hypot(a.x-food.x,a.y-food.y)<=5+kind.r&&clearPath(a.x,a.y,food.x,food.y,kind.r)){food.value--;a.load=1;resetLoopMemory(a);a.scentAge=0;a.explore=0;a.depart=0;a.a+=Math.PI;resetScentChoice(a);break;}}}
+if(a.avoid<=0){const nearby=nearbyDestination(a);
+ if(nearby){turnToward(a,Math.atan2(nearby.y-a.y,nearby.x-a.x),dt,18);resetScentChoice(a);}
+ else if(a.depart>0)resetScentChoice(a);
+ else if(a.escape>0)turnToward(a,a.escapeHeading,dt,5);
+ else if(a.explore>0)turnToward(a,a.exploreHeading,dt,5);
+ else followScent(a,dt);
+ // Keep a little adjustable motion even while following a trail; damp near targets.
+ if(pathRandomness>0)a.a+=(Math.random()-.5)*pathRandomness*(nearby?.25:1.7)*Math.sqrt(dt);
+}else {resetScentChoice(a);if(a.escape>0)a.escapeHeading=a.a;}
 const speed=kind.speed*(a.load?.82:1);moveAnt(a,speed*dt);
-if(a.load)deposit(a.x,a.y,dt*2);trailInk.strokeStyle=kind.color;trailInk.globalAlpha=a.load?.55:.12;trailInk.lineWidth=kind.r*.8;trailInk.beginPath();trailInk.moveTo(ox,oy);trailInk.lineTo(a.x,a.y);trailInk.stroke();}
+const strength=sourceStrength(a);if(strength>0){deposit(a.x,a.y,strength,a.load?1:0);trailInk.strokeStyle=a.load?'#ffb85c':'#70d8ff';trailInk.globalAlpha=(a.load?.5:.14)*strength;trailInk.lineWidth=kind.r*.8;trailInk.beginPath();trailInk.moveTo(ox,oy);trailInk.lineTo(a.x,a.y);trailInk.stroke();}}
 ink.globalAlpha=1;for(let i=foods.length-1;i>=0;i--)if(!foods[i].value)foods.splice(i,1);}
 function render(){ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);for(const layer of trailLayers){ctx.globalAlpha=fade(trailClock-layer.time);if(ctx.globalAlpha>0)ctx.drawImage(layer.canvas,0,0,w,h);}ctx.globalAlpha=1;ctx.drawImage(wallCanvas,0,0,w,h);for(const f of foods){ctx.strokeStyle='#ffffff66';ctx.lineWidth=1;ctx.beginPath();ctx.arc(f.x,f.y,12+8*Math.sqrt(f.value/250),0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(f.x,f.y,5,0,Math.PI*2);ctx.fill();ctx.font='12px Arial';ctx.textAlign='center';ctx.fillText(f.value,Math.max(18,Math.min(w-18,f.x)),f.y<45?f.y+32:f.y-24);}
 ctx.fillStyle='#101010';ctx.strokeStyle='#ffffff88';ctx.beginPath();ctx.arc(nest.x,nest.y,nest.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.strokeStyle='#ffffff22';ctx.beginPath();ctx.arc(nest.x,nest.y,nest.r+6,0,Math.PI*2);ctx.stroke();

@@ -1,32 +1,37 @@
 # LC — Ant Field
 
-An interactive canvas simulation on a black background, with three ant categories distinguished by size, color, and speed.
+An interactive ant colony on a black canvas, with three sizes and colors. The default population is 400, all spawning at the central nest.
 
 ## Run locally
 
-Install Node.js 18 or newer, then run these commands from this folder:
-
-```sh
-npm start
-```
-
-Open http://127.0.0.1:5173. No dependencies need to be installed. Set the `PORT` environment variable to use another port. You can also open `dist/index.html` directly in a browser.
+With Node.js 18 or newer, run `npm start` from this folder and open http://127.0.0.1:5173. No dependency installation is needed. Set `PORT` to choose another port, or open `dist/index.html` directly in a browser.
 
 ## Controls
 
-- **Place food:** click or tap on open space. Enter or Space while the canvas is focused places food randomly.
-- **Food weight:** sets the maximum value of new food. Each food source receives a random integer between 20% and 100% of this value.
-- **Amount of ants:** changes the population live from 10 to 3,000; the default is 1,000.
-- **Draw obstacles:** drag to paint barriers. Ants cannot pass through them. Existing food and the central nest remain clear.
-- **Clear obstacles:** removes all barriers. Escape switches back to food mode when the canvas is focused.
+- **Food / Walls:** click to place food or drag to draw solid barriers.
+- **Generate food:** adds up to eight random sources in open space, using the current food weight.
+- **Generate walls:** replaces walls with a smooth random-noise pattern, keeping the nest and existing food clear.
+- **Restart ants:** respawns the colony at the nest and clears trails and delivery counters, preserving remaining food, walls, and settings.
+- **Reset environment:** clears food, walls, trails, carried food, and counters without moving ants or changing settings.
+- **Food weight:** maximum new-source value; each source randomly receives 20–100% of it.
+- **Ants:** 10–3,000; default 400.
+- **Scent decay:** 1–30 seconds; default 10.
+- **Randomness:** 0–100%; default 30%. Controls additional wandering and exploratory trail breaks.
+- **Dashboard arrow:** hides or restores the controls while the simulation continues.
 
-Ants collect one unit at a time and deliver it to the central nest. Food-carrying ants reinforce a shared pheromone field; searching ants sample nearby scent and turn toward stronger trails. Both visible trails and scent fade linearly over approximately 10 seconds, using quarter-second history buckets. Ants discover nearby food instead of knowing every food location.
+With the canvas focused, Enter or Space adds random food in Food mode. Escape selects Food mode.
 
-This is a simplified, biologically inspired simulation, not a calibrated model of a specific ant species. Obstacle avoidance uses local steering, so fully enclosed food or ants can remain trapped. Reducing the ant count drops any carried food at the retiring ants' positions to preserve the food total.
+## Behavior
+
+Each ant carries one food unit at a time. Loaded ants follow blue scent deposited by unloaded ants; unloaded ants follow amber scent deposited by loaded ants. Source strength is highest after nest contact or food pickup, decreases with time, and stops after 30 seconds without source renewal. Maximum-strength blending prevents repeated circling from amplifying a false source. Scent and visible trails fade using quarter-second history buckets.
+
+Ants detect food or the nest within twice their own diameter, measured from the target edge; pickup and delivery require contact. There is no global homeward bias or timed return-home behavior. Ants retain up to 12 seconds of position samples to detect looping or confinement, then break away from scent for three seconds toward less-visited open space. This escape behavior works even at zero additional randomness.
+
+Walls block movement for every ant size. Drawing or generating walls relocates any embedded ants to open space. Navigation is local, so enclosed regions can still trap ants or make food inaccessible. This is a simplified simulation rather than a calibrated biological model.
 
 ## Files
 
 - `dist/index.html` — self-contained interface, rendering, and simulation.
 - `server.cjs` — local static server using Node.js built-ins.
 
-No external libraries, accounts, or network services are required by the simulation.
+No external libraries, accounts, or network services are required.

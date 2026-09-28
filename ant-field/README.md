@@ -19,7 +19,9 @@ With Node.js 18 or newer, run `npm start` from this folder and open http://127.0
 - **Randomness:** 0–100%; default 30%. Controls additional wandering and exploratory trail breaks.
 - **Play food / Stop food:** replenishes the field with up to eight sources when all food sources are depleted, using the current food weight.
 - **Glow:** adjusts trail bloom from 0–100%; default 40%.
-- **Trails only / Show everything:** hides ants, walls, labels, and dashboard while retaining scent trails, white nest/food glows, and the toggle. Editing the canvas is disabled in this view.
+- **Trails only / Show everything:** hides ants, walls, labels, and dashboard while retaining scent trails, white nest/food glows, the view toggle, and Save JPEG. Editing the canvas is disabled in this view.
+- **Save JPEG:** downloads the current canvas at 1440 × 1080 (4:3), preserving proportions with black margins when needed. Controls are excluded; available in both display modes.
+- **Loaded / Unloaded color swatches:** open independent HSV (Hue, Saturation, Value) controls. Changes recolor existing trails and glow immediately and appear in JPEG exports.
 - **Dashboard arrow:** hides or restores the controls while the simulation continues.
 
 With the canvas focused, Enter or Space adds random food in Food mode. Escape selects Food mode.

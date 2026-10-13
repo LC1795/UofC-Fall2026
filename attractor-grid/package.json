@@ -1,0 +1,8 @@
+{
+  "name": "lc-attractor-grid",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive Cartesian grid with cursor-driven square rotation and displacement.",
+  "scripts": { "start": "node server.cjs" },
+  "engines": { "node": ">=18" }
+}

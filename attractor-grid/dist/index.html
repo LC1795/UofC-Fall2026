@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LC — Attractor Grid</title>
+<meta name="description" content="An interactive 12 by 18 grid. Explore rotation and displacement with a cursor attractor.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='white' stroke='black' stroke-width='2' d='M4 4h24v24H4z'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%232450ff'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#151515;font-family:Arial,Helvetica,sans-serif}main{min-height:100svh;display:grid;grid-template-columns:300px 1fr}aside{padding:40px 32px;border-right:1px solid #e6e6e6;display:flex;flex-direction:column;gap:48px}.brand{font-size:24px;font-weight:800;letter-spacing:-1px}.eyebrow{font-size:12px;letter-spacing:2px;color:#666;text-transform:uppercase;margin:0 0 14px}h1{font-size:32px;line-height:1.1;letter-spacing:-1.2px;margin:0 0 18px;font-weight:500}.description{font-size:16px;line-height:1.6;color:#626262;margin:0}.controls{display:grid;gap:32px}.control-head{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin-bottom:14px}output{color:#2450ff;font-variant-numeric:tabular-nums;white-space:nowrap}input{width:100%;margin:0;accent-color:#2450ff;cursor:pointer;height:24px}.range{display:flex;justify-content:space-between;font-size:12px;color:#737373;margin-top:5px}.legend{margin-top:auto;font-size:13px;color:#666;line-height:2}.dot{display:inline-block;width:6px;height:6px;background:#2450ff;border-radius:50%;margin-right:9px}.stage{min-width:0;display:flex;flex-direction:column;height:100svh;padding:28px 36px 20px}.stage-top,.stage-bottom{display:flex;justify-content:space-between;color:#707070;font-size:12px;letter-spacing:1px}.stage-top{padding-bottom:12px}.stage-bottom{padding-top:12px;letter-spacing:0}.drawing{position:relative;flex:1;min-height:0}canvas{display:block;width:100%;height:100%;touch-action:none;outline-offset:4px}canvas:focus-visible{outline:2px solid #2450ff}@media(max-width:700px){main{grid-template-columns:1fr}aside{padding:22px 24px;gap:24px;border-right:0;border-bottom:1px solid #e6e6e6}.brand{font-size:20px}h1{font-size:28px;margin-bottom:10px}.controls{grid-template-columns:1fr 1fr;gap:24px}.legend{display:none}.stage{height:76svh;min-height:480px;padding:22px 16px}.description{font-size:14px}.control-head{flex-direction:column;gap:5px}.eyebrow{margin-bottom:8px}}
+</style>
+</head>
+<body><main>
+<aside><div class="brand">LC<span style="color:#2450ff">.</span></div>
+<div><p class="eyebrow">Generative study / 01</p><h1>Attractor grid</h1><p class="description">Move across the grid to bend its order. Adjust how far the squares turn and travel.</p></div>
+<div class="controls">
+<div><div class="control-head"><label for="rotation">Rotation Influence</label><output id="rotation-value" for="rotation">60°</output></div><input id="rotation" type="range" min="0" max="180" value="60" step="1"><div class="range"><span>0°</span><span>180°</span></div></div>
+<div><div class="control-head"><label for="shift">Shift Influence</label><output id="shift-value" for="shift">0.75 cells</output></div><input id="shift" type="range" min="0" max="2" value="0.75" step="0.05"><div class="range"><span>0</span><span>2 cells</span></div></div>
+</div><div class="legend"><span class="dot"></span>216 fixed points<br>12 columns × 18 rows</div></aside>
+<section class="stage" aria-label="Interactive grid"><div class="stage-top"><span>XY / FIELD</span><span>12 × 18</span></div><div class="drawing"><canvas tabindex="0" aria-label="Grid of 216 stationary blue points and transforming black squares. Move your pointer or use arrow keys to position the attractor; press Escape to reset."></canvas></div><div class="stage-bottom"><span>Move or drag to attract</span><span>Arrow keys also work</span></div></section>
+</main><script src="grid.js"></script></body></html>
